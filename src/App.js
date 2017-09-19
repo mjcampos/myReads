@@ -12,24 +12,34 @@ class BooksApp extends React.Component {
         * pages, as well as provide a good URL they can bookmark and share.
         */
         showSearchPage: false,
-        list: []
+        list: [],
+        searchText: "",
+        searchList: []
     }
 
-  onHandleSelection = (bookToUpdate, selectedOption) => {
-    BooksAPI.update(bookToUpdate, selectedOption).then(bookIds => {
-        var state = this.state;
+    onHandleSelection = (bookToUpdate, selectedOption) => {
+        BooksAPI.update(bookToUpdate, selectedOption).then(bookIds => {
+            BooksAPI.getAll().then(books => {
+                var state = this.state;
 
-        state.list = this.state.list.map(book => {
-            if (book.id === bookToUpdate.id) {
-                book.shelf = selectedOption;
-            };
+                state.list = [];
 
-            return book;
+                books.map(book => {
+                    state.list.push({
+                        id: book.id,
+                        backgroundImage: "url(" + book.imageLinks.smallThumbnail + ")",
+                        title: book.title,
+                        author: book.authors[0],
+                        shelf: book.shelf
+                    });
+
+                    return true;
+                });
+
+                this.setState(state);
+            });
         });
-
-        this.setState(state);
-    });
-  }
+    }
 
     componentWillMount() {
         var state = this.state;
@@ -52,6 +62,37 @@ class BooksApp extends React.Component {
         });
     }
 
+    onUpdateSearchText(searchText) {
+        var state = this.state;
+
+        // If searchText has value then run a search
+        if (searchText.trim().length) {
+            BooksAPI.search(searchText, 10).then((data) => {
+                // If error return
+                if (!data.error) {
+                    state.searchList = [];
+
+                    state.searchList = data.map(book => {
+                        return {
+                            id: book.id,
+                            backgroundImage: (book.imageLinks) ? ("url(" + book.imageLinks.smallThumbnail + ")") : "url(https://d125fmws0bore1.cloudfront.net/assets/udacity_share-317a7f82552763598a5c91e1550b7cd83663ce02d6d475d703e25a873cd3b574.png)",
+                            title: book.title,
+                            author: (book.authors) ? book.authors[0] : null,
+                            shelf: "none"
+                        };
+                    });
+                }
+
+                this.setState(state);
+            });
+        } else {
+            state.searchList = [];
+        }
+
+        state.searchText = searchText;
+        this.setState(state);
+    }
+
   render() {
     return (
       <div className="app">
@@ -68,12 +109,15 @@ class BooksApp extends React.Component {
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
-                <input type="text" placeholder="Search by title or author"/>
+                <input type="text" placeholder="Search by title or author" onChange={() => this.onUpdateSearchText(document.getElementsByTagName('input')[0].value)} value={this.state.searchText}/>
 
               </div>
             </div>
             <div className="search-books-results">
               <ol className="books-grid">
+                {this.state.searchList.map((book) => (
+                    <Book key={book.id} handleSelect={this.onHandleSelection} book={book}/>
+                ))}
               </ol>
             </div>
           </div>
@@ -134,4 +178,4 @@ class BooksApp extends React.Component {
   }
 }
 
-export default BooksApp
+export default BooksApp;
