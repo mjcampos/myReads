@@ -2,14 +2,14 @@ import React from 'react'
 import './App.css'
 
 class Book extends React.Component {
-	onSelectOption(title, type, element) {
+	onSelectOption(id, element) {
 		var elementValue = element[element.selectedIndex].value;
 
-		this.props.handleSelect(title, type, elementValue);
+		this.props.handleSelect(id, elementValue);
 	}
 
 	render() {
-		var {book, type}  = this.props;
+		var {book}  = this.props;
 
 		return (
 			<li>
@@ -17,7 +17,7 @@ class Book extends React.Component {
 	                <div className="book-top">
 	                    <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: book.backgroundImage }}></div>
 	                    <div className="book-shelf-changer">
-	                        <select id={book.title} onChange={() => this.onSelectOption(book.title, type, document.getElementById(book.title))} defaultValue={type}>
+	                        <select id={book.id} onChange={() => this.onSelectOption(book.id, document.getElementById(book.id))} defaultValue={book.shelf}>
 	                            <option value="none" disabled>Move to...</option>
 	                            <option value="currentlyReading">Currently Reading</option>
 	                            <option value="wantToRead">Want to Read</option>
