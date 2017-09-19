@@ -1,11 +1,12 @@
 import React from 'react'
+import * as BooksAPI from './BooksAPI'
 import './App.css'
 
 class Book extends React.Component {
 	onSelectOption(id, element) {
 		var elementValue = element[element.selectedIndex].value;
 
-		this.props.handleSelect(id, elementValue);
+		BooksAPI.get(id).then(book => this.props.handleSelect(book, elementValue));
 	}
 
 	render() {

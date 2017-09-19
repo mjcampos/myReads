@@ -15,18 +15,20 @@ class BooksApp extends React.Component {
         list: []
     }
 
-  onHandleSelection = (id, selectedOption) => {
-    var state = this.state;
-    
-    state.list = this.state.list.map(book => {
-        if (book.id === id) {
-            book.shelf = selectedOption;
-        };
+  onHandleSelection = (bookToUpdate, selectedOption) => {
+    BooksAPI.update(bookToUpdate, selectedOption).then(bookIds => {
+        var state = this.state;
 
-        return book;
+        state.list = this.state.list.map(book => {
+            if (book.id === bookToUpdate.id) {
+                book.shelf = selectedOption;
+            };
+
+            return book;
+        });
+
+        this.setState(state);
     });
-    
-    this.setState(state);
   }
 
     componentWillMount() {
