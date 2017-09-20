@@ -12,7 +12,6 @@ class BooksApp extends React.Component {
         * users can use the browser's back and forward buttons to navigate between
         * pages, as well as provide a good URL they can bookmark and share.
         */
-        showSearchPage: false,
         list: [],
         searchText: "",
         searchList: []
@@ -30,7 +29,7 @@ class BooksApp extends React.Component {
                         id: book.id,
                         backgroundImage: "url(" + book.imageLinks.smallThumbnail + ")",
                         title: book.title,
-                        author: book.authors[0],
+                        authors: book.authors,
                         shelf: book.shelf
                     });
 
@@ -52,7 +51,7 @@ class BooksApp extends React.Component {
                     id: book.id,
                     backgroundImage: "url(" + book.imageLinks.smallThumbnail + ")",
                     title: book.title,
-                    author: book.authors[0],
+                    authors: book.authors,
                     shelf: book.shelf
                 });
 
@@ -78,7 +77,7 @@ class BooksApp extends React.Component {
                             id: book.id,
                             backgroundImage: (book.imageLinks) ? ("url(" + book.imageLinks.smallThumbnail + ")") : "url(https://d125fmws0bore1.cloudfront.net/assets/udacity_share-317a7f82552763598a5c91e1550b7cd83663ce02d6d475d703e25a873cd3b574.png)",
                             title: book.title,
-                            author: (book.authors) ? book.authors[0] : null,
+                            authors: (book.authors) ? book.authors : null,
                             shelf: "none"
                         };
                     });
