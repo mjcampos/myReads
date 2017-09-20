@@ -29,7 +29,7 @@ class BooksApp extends React.Component {
                         id: book.id,
                         backgroundImage: "url(" + book.imageLinks.smallThumbnail + ")",
                         title: book.title,
-                        authors: book.authors,
+                        authors: (book.authors) ? book.authors : [],
                         shelf: book.shelf
                     });
 
@@ -51,7 +51,7 @@ class BooksApp extends React.Component {
                     id: book.id,
                     backgroundImage: "url(" + book.imageLinks.smallThumbnail + ")",
                     title: book.title,
-                    authors: book.authors,
+                    authors: (book.authors) ? book.authors : [],
                     shelf: book.shelf
                 });
 
@@ -68,16 +68,17 @@ class BooksApp extends React.Component {
         // If searchText has value then run a search
         if (searchText.trim().length) {
             BooksAPI.search(searchText, 10).then((data) => {
-                // If error return
+                state.searchList = [];
+
+                // If no errors are found
                 if (!data.error) {
-                    state.searchList = [];
 
                     state.searchList = data.map(book => {
                         return {
                             id: book.id,
                             backgroundImage: (book.imageLinks) ? ("url(" + book.imageLinks.smallThumbnail + ")") : "url(https://d125fmws0bore1.cloudfront.net/assets/udacity_share-317a7f82552763598a5c91e1550b7cd83663ce02d6d475d703e25a873cd3b574.png)",
                             title: book.title,
-                            authors: (book.authors) ? book.authors : null,
+                            authors: (book.authors) ? book.authors : [],
                             shelf: "none"
                         };
                     });
