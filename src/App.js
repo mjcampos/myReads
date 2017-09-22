@@ -1,15 +1,18 @@
-import React from 'react'
-import {Route, Link} from 'react-router-dom'
+import React, {Component} from 'react'
+import {Route} from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
-import Book from './Book'
 import BookList from './BookList'
+import Search from './Search'
 
-class BooksApp extends React.Component {
-    state = {
-        list: [],
-        searchText: "",
-        searchList: []
+class BooksApp extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            list: [],
+            searchText: "",
+            searchList: []
+        }
     }
 
     onHandleSelection = (bookToUpdate, selectedOption) => {
@@ -60,7 +63,7 @@ class BooksApp extends React.Component {
         });
     }
 
-    onUpdateSearchText(searchText) {
+    onUpdateSearchText = (searchText) => {
         var state = this.state;
 
         // If searchText has value then run a search
@@ -108,30 +111,7 @@ class BooksApp extends React.Component {
     return (
       <div className="app">
             <Route path="/search" exact render={() => (
-                  <div className="search-books">
-                    <div className="search-books-bar">
-                      <Link className="close-search" to="/">Close</Link>
-                      <div className="search-books-input-wrapper">
-                        {/*
-                          NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                          You can find these search terms here:
-                          https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-                          However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                          you don't find a specific author or title. Every search is limited by search terms.
-                        */}
-                        <input type="text" placeholder="Search by title or author" onChange={() => this.onUpdateSearchText(document.getElementsByTagName('input')[0].value)} value={this.state.searchText}/>
-
-                      </div>
-                    </div>
-                    <div className="search-books-results">
-                      <ol className="books-grid">
-                        {this.state.searchList.map((book) => (
-                            <Book key={book.id} handleSelect={this.onHandleSelection} book={book}/>
-                        ))}
-                      </ol>
-                    </div>
-                  </div>
+                  <Search searchList={this.state.searchList} onUpdateSearchText={this.onUpdateSearchText} searchText={this.state.searchText} onHandleSelection={this.onHandleSelection} />
             )}/>
 
             <Route path="/" exact render={({history}) => (
